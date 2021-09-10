@@ -6,9 +6,13 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String[] words = {"good", "bad"};
+        String [] words = {"good", "bad"};
         NaiveBayes nb = new NaiveBayes(words);
         nb.trainClassifier(new File("traindata.txt"));
-        nb.classifyFile(new File("newdata.txt"), new File("classifications.txt"));
+        ConfusionMatrix cm = nb.computeAccuracy(new File("testdata.txt"));
+        System.out.println(cm.getTruePositives());
+        System.out.println(cm.getFalsePositives());
+        System.out.println(cm.getTrueNegatives());
+        System.out.println(cm.getFalseNegatives());
     }
 }

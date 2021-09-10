@@ -83,4 +83,35 @@ public class NaiveBayes extends DocumentDecoder {
         }
     }
 
+    public ConfusionMatrix computeAccuracy(File testdata) throws IOException {
+        ConfusionMatrix confusionMatrix = new ConfusionMatrix();
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(testdata));
+            bufferedReader.lines().forEach(s -> {
+                if (isDocumentSpam(s)) {
+                    if (classify(s)) {
+                        confusionMatrix.addTruePositive();
+                    } else {
+                        confusionMatrix.addFalseNegative();
+                    }
+                } else {
+                    if (classify(s)) {
+                        confusionMatrix.addFalsePositive();
+                    } else {
+                        confusionMatrix.addTrueNegative();
+                    }
+                }
+            });
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+
+        return confusionMatrix;
+    }
+
+
 }
