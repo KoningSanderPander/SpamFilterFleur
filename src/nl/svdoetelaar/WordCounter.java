@@ -43,6 +43,25 @@ public class WordCounter {
         return numberOfFocusWords;
     }
 
+    public boolean isCounterTrained() {
+        return focusWordsInSpam + focusWordsNotSpam > 0 && totalWordsNotSpam > 0 && totalWordsSpam > 0;
+    }
+
+    public double getConditionalNoSpam() {
+        if (!isCounterTrained()) {
+            throw new IllegalStateException();
+        }
+        return (double) focusWordsNotSpam / totalWordsNotSpam;
+    }
+
+    public double getConditionalSpam() {
+        if (!isCounterTrained()) {
+            throw new IllegalStateException();
+        }
+        return (double) focusWordsInSpam / totalWordsSpam;
+    }
+
+
     public String getFocusWord() {
         return focusWord;
     }
@@ -53,7 +72,9 @@ public class WordCounter {
                 "\ttotalWordsNotSpam: %d\n" +
                 "\ttotalWordsSpam: %d\n" +
                 "\tfocusWordsNotSpam: %d\n" +
-                "\tfocusWordsInSpam: %d\n", focusWord, totalWordsNotSpam, totalWordsSpam, focusWordsNotSpam, focusWordsInSpam);
+                "\tfocusWordsInSpam: %d\n" +
+                "\tconditionalSpam: %.2f\n" +
+                "\tconditionalNoSpam: %.2f\n", focusWord, totalWordsNotSpam, totalWordsSpam, focusWordsNotSpam, focusWordsInSpam, getConditionalSpam(), getConditionalNoSpam());
 
     }
 }
