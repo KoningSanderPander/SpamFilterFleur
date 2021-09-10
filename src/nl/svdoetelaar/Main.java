@@ -1,18 +1,14 @@
 package nl.svdoetelaar;
 
+import java.io.File;
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String[] words = {"good", "bad"};
         NaiveBayes nb = new NaiveBayes(words);
-        nb.addSample("1 good bad bad bad casino");
-        nb.addSample("0 bad good good pizza");
-        nb.addSample("0 bad good tapas");
-        System.out.println(nb.classify("good"));
-        System.out.println(nb.classify("bad"));
-        System.out.println(nb.classify("good bad bad"));
-        System.out.println(nb.classify("pizza"));
-        System.out.println(nb.classify("casino"));
-
+        nb.trainClassifier(new File("traindata.txt"));
+        nb.classifyFile(new File("newdata.txt"), new File("classifications.txt"));
     }
 }
