@@ -2,36 +2,35 @@ package nl.svdoetelaar;
 
 import java.util.regex.Pattern;
 
-public class WordCounter {
+public class WordCounter extends DocumentDecoder {
     private int totalWordsNotSpam = 0;
     private int totalWordsSpam = 0;
     private int focusWordsNotSpam = 0;
     private int focusWordsInSpam = 0;
 
-    private String focusWord;
+    private final String FOCUS_WORD;
 
     public WordCounter(String focusWord) {
-        this.focusWord = focusWord;
+        this.FOCUS_WORD = focusWord;
     }
 
     public void addSample(String document) {
-        String[] wordsInDocument = document.split(" ");
+        String[] wordsInDocument = splitWordsInDocument(document);
 
-        System.out.println(document.charAt(0) == '0');
-        if (document.charAt(0) == '0') {
+        if (isDocumentSpam(document)) {
             // no spam
-            totalWordsNotSpam += wordsInDocument.length - 1;
-            focusWordsNotSpam += getFocusWordsInDocument(wordsInDocument);
+            totalWordsSpam += wordsInDocument.length - DOCUMENT_PREFIX_OFFSET;
+            focusWordsInSpam += getFocusWordsInDocument(wordsInDocument);
         } else {
             // spam
-            totalWordsSpam += wordsInDocument.length - 1;
-            focusWordsInSpam += getFocusWordsInDocument(wordsInDocument);
+            totalWordsNotSpam += wordsInDocument.length - DOCUMENT_PREFIX_OFFSET;
+            focusWordsNotSpam += getFocusWordsInDocument(wordsInDocument);
         }
 
     }
 
     private int getFocusWordsInDocument(String[] wordsInDocument) {
-        Pattern pattern = Pattern.compile(focusWord, Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(FOCUS_WORD, Pattern.CASE_INSENSITIVE);
         int numberOfFocusWords = 0;
 
         for (String word : wordsInDocument) {
@@ -43,6 +42,7 @@ public class WordCounter {
         return numberOfFocusWords;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isCounterTrained() {
         return focusWordsInSpam + focusWordsNotSpam > 0 && totalWordsNotSpam > 0 && totalWordsSpam > 0;
     }
@@ -61,20 +61,19 @@ public class WordCounter {
         return (double) focusWordsInSpam / totalWordsSpam;
     }
 
-
     public String getFocusWord() {
-        return focusWord;
+        return FOCUS_WORD;
     }
 
     @Override
     public String toString() {
-        return String.format("focusWord: %s\n" +
-                "\ttotalWordsNotSpam: %d\n" +
-                "\ttotalWordsSpam: %d\n" +
-                "\tfocusWordsNotSpam: %d\n" +
-                "\tfocusWordsInSpam: %d\n" +
-                "\tconditionalSpam: %.2f\n" +
-                "\tconditionalNoSpam: %.2f\n", focusWord, totalWordsNotSpam, totalWordsSpam, focusWordsNotSpam, focusWordsInSpam, getConditionalSpam(), getConditionalNoSpam());
+        return String.format("Focus Word: %s\n" +
+                "\tTotal Words Not Spam: %d\n" +
+                "\tTotal Words Spam: %d\n" +
+                "\tFocus Words Not Spam: %d\n" +
+                "\tFocus Words In Spam: %d\n" +
+                "\tConditional Spam: %.2f\n" +
+                "\tConditional No Spam: %.2f\n", FOCUS_WORD, totalWordsNotSpam, totalWordsSpam, focusWordsNotSpam, focusWordsInSpam, getConditionalSpam(), getConditionalNoSpam());
 
     }
 }

@@ -3,11 +3,16 @@ package nl.svdoetelaar;
 public class Main {
 
     public static void main(String[] args) {
-        WordCounter wc = new WordCounter("good");
-        System.out.println(wc.getFocusWord());
-        wc.addSample("1 good bad bad bad");
-        wc.addSample("0 bad good good");
-        wc.addSample("0 bad good");
-        System.out.println(wc);
+        String[] words = {"good", "bad"};
+        NaiveBayes nb = new NaiveBayes(words);
+        nb.addSample("1 good bad bad bad casino");
+        nb.addSample("0 bad good good pizza");
+        nb.addSample("0 bad good tapas");
+        System.out.println(nb.classify("good"));
+        System.out.println(nb.classify("bad"));
+        System.out.println(nb.classify("good bad bad"));
+        System.out.println(nb.classify("pizza"));
+        System.out.println(nb.classify("casino"));
+
     }
 }
